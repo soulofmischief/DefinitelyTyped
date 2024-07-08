@@ -1,5 +1,9 @@
 type ObjectConstructor = new(...args: any[]) => any;
 
+type NotEqualsValue<T,U> =
+  (T extends U ? 1 : 0) extends
+  (U extends T ? 1 : 0) ? never : U;
+
 declare namespace o {
     type AssertionDescriber = (description: string) => void;
 
@@ -17,12 +21,12 @@ declare namespace o {
         /** Asserts that two values are strictly equal */
         equals(expected: T): AssertionDescriber;
         /** Asserts that two values are **not** strictly equal */
-        notEquals(value: T): AssertionDescriber;
+        notEquals<U>(value: NotEqualsValue<T, U>): AssertionDescriber;
 
         /** Asserts that two objects are recursively equal */
         deepEquals(expected: T): AssertionDescriber;
         /** Asserts that two objects are **not** recursively equal */
-        notDeepEquals(value: T): AssertionDescriber;
+        notDeepEquals<U>(value: NotEqualsValue<T, U>): AssertionDescriber;
 
         /** Asserts that the function throws an error of a given type */
         throws(this: Assertion<() => any>, error: string | ObjectConstructor): AssertionDescriber;
